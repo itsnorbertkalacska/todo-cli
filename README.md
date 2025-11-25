@@ -2,7 +2,7 @@
 
 ## Usage
 - clone the repo
-- run the app with `python todo.py`
+- run the app with `python todo/core.py`
 
 ## Commands
 - `add <task>`: adds a new todo
