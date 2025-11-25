@@ -1,40 +1,45 @@
 import json
 import os
 
-TASK_FILE = "tasks.json"
+TASKS_FILE = "tasks.json"
+
 
 def load_tasks():
-    if not os.path.exists(TASK_FILE):
+    if not os.path.exists(TASKS_FILE):
         return []
     try:
-        with open(TASK_FILE, "r") as file:
+        with open(TASKS_FILE, "r") as file:
             return json.load(file)
     except json.JSONDecodeError:
         print("Error: Corrupted tasks file. Starting with an empty list.")
         return []
 
+
 def save_tasks(tasks):
     try:
-        with open(TASK_FILE, "w") as file:
+        with open(TASKS_FILE, "w") as file:
             json.dump(tasks, file, indent=4)
     except Exception as e:
         print(f"Error saving tasks: {e}")
 
+
 def add_task(tasks, description):
     task_id = 1 if not tasks else max(task["id"] for task in tasks) + 1
-    task = { "id": task_id, "description": description, "completed": False }
+    task = {"id": task_id, "description": description, "completed": False}
     tasks.append(task)
     save_tasks(tasks)
     print(f"Added task: {description}, (ID: {task_id})")
 
+
 def delete_task(tasks, task_id):
     for i, task in enumerate(tasks):
-        if tasks["id"] == task_id:
+        if task["id"] == task_id:
             tasks.pop(i)
             save_tasks(tasks)
             print(f"Deleted task ID {task_id}")
             return
     print(f"Task ID {task} not found")
+
 
 def complete_task(tasks, task_id):
     for task in tasks:
@@ -45,6 +50,7 @@ def complete_task(tasks, task_id):
             return
     print(f"Task ID {task_id} not found")
 
+
 def list_tasks(tasks):
     if not tasks:
         print("No tasks found.")
@@ -54,9 +60,12 @@ def list_tasks(tasks):
         status = "✓" if task["completed"] else " "
         print(f"[{status}] ID: {task['id']} - {task['description']}")
 
+
 def main():
     tasks = load_tasks()
-    print("Welcome to Todo CLI! Commands: add <task>, delete <id>, complete <id>, list, quit")
+    print(
+        "Welcome to Todo CLI! Commands: add <task>, delete <id>, complete <id>, list, quit"
+    )
 
     while True:
         try:
@@ -84,10 +93,12 @@ def main():
                 try:
                     task_id = int(args)
                     complete_task(tasks, task_id)
-                except ValueError: 
+                except ValueError:
                     print("Error: Please provide a valid task ID")
             else:
-                print("Invalid command. Use: add <task>, complete <id>, delete <id>, list, quit")
+                print(
+                    "Invalid command. Use: add <task>, complete <id>, delete <id>, list, quit"
+                )
 
         except KeyboardInterrupt:
             print("\nSee you later!")
@@ -95,6 +106,6 @@ def main():
         except Exception as e:
             print(f"Error: {e}")
 
+
 if __name__ == "__main__":
     main()
-
